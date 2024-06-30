@@ -1,6 +1,7 @@
 package ru.vienoulis.viHostelBot;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.inject.Inject;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import ru.vienoulis.viHostelBot.service.HandlersProcessor;
 
 @Getter
 @Slf4j
@@ -22,7 +24,8 @@ public class Bot extends TelegramLongPollingBot {
     @Value("${vienoulis.telegramm.token}")
     private String botToken;
     private final TelegramBotsApi telegramBotsApi;
-
+    @Inject
+    private HandlersProcessor handlersProcessor;
 
     @Autowired
     public Bot() {
@@ -44,9 +47,9 @@ public class Bot extends TelegramLongPollingBot {
         log.info("onUpdateReceived.enter;");
         if (hasText(update)) {
             log.info("onUpdateReceived; has text: {}", update.getMessage().getText());
+            handlersProcessor.processMessage(update.getMessage());
         }
         log.info("onUpdateReceived.exit;");
-
     }
 
     @Override
