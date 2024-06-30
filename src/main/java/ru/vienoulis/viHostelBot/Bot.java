@@ -1,8 +1,10 @@
 package ru.vienoulis.viHostelBot;
 
 import jakarta.annotation.PostConstruct;
+import java.util.Objects;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -11,8 +13,6 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import ru.vienoulis.viHostelBot.service.MessageValidator;
-import ru.vienoulis.viHostelBot.service.PaymentRecorder;
 
 @Getter
 @Slf4j
@@ -22,14 +22,10 @@ public class Bot extends TelegramLongPollingBot {
     @Value("${vienoulis.telegramm.token}")
     private String botToken;
     private final TelegramBotsApi telegramBotsApi;
-    private final MessageValidator messageValidator;
-    private final PaymentRecorder paementRecorder;
 
 
     @Autowired
-    public Bot(MessageValidator messageValidator, PaymentRecorder paementRecorder) {
-        this.messageValidator = messageValidator;
-        this.paementRecorder = paementRecorder;
+    public Bot() {
         try {
             telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         } catch (TelegramApiException e) {
@@ -45,20 +41,25 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        log.info("onUpdateReceived;");
-        if (!messageValidator.hasText(update.getMessage())) {
-            log.info("message has no text");
-            return;
+        log.info("onUpdateReceived.enter;");
+        if (hasText(update)) {
+            log.info("onUpdateReceived; has text: {}", update.getMessage().getText());
         }
-        var data = update.getMessage().getText();
-        if (messageValidator.isPaymentRecordData(data)) {
-            log.info("onUpdateReceived; isPaymentRecord");
-            paementRecorder.processData(data);
-        }
+        log.info("onUpdateReceived.exit;");
+
     }
 
     @Override
     public String getBotUsername() {
         return "Test viHostelBot";
+    }
+
+    private boolean hasText(Update update) {
+        if (Objects.isNull(update) || Objects.isNull(update.getMessage())) {
+            log.info("hasText; Update or message is null");
+            return false;
+        }
+
+        return StringUtils.isNotBlank(update.getMessage().getText());
     }
 }
