@@ -7,4 +7,4 @@
 /dataSources/
 /dataSources.local.xml
 ../.gradle/
-../.gradle/buildOutputCleanup/buildOutputCleanup.lock
+gradle/buildOutputCleanup/buildOutputCleanup.lock
