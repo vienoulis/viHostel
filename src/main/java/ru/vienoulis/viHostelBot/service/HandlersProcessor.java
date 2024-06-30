@@ -2,6 +2,7 @@ package ru.vienoulis.viHostelBot.service;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -18,13 +19,13 @@ public class HandlersProcessor {
         handlers.stream()
                 .filter(h -> StringUtils.equals(message.getText(), h.action()))
                 .filter(h -> h.validate(message))
+                .collect(Collectors.toSet())
                 .forEach(h -> h.process(message));
     }
 
     public void registerHandler(ViHostelHandler handler) {
-        log.info("registerHandler.enter; handler action: {}", handler.action());
         handlers.add(handler);
-        log.info("registerHandler.exit; registered;");
+        log.info("registerHandler; handler: {} registered;", handler.getClass().getSimpleName());
     }
 
 }

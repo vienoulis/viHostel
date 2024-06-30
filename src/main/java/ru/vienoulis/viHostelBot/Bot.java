@@ -15,6 +15,8 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.vienoulis.viHostelBot.service.HandlersProcessor;
+import ru.vienoulis.viHostelBot.state.State;
+import ru.vienoulis.viHostelBot.state.StateMachine;
 
 @Getter
 @Slf4j
@@ -26,6 +28,8 @@ public class Bot extends TelegramLongPollingBot {
     private final TelegramBotsApi telegramBotsApi;
     @Inject
     private HandlersProcessor handlersProcessor;
+    @Inject
+    private StateMachine stateMachine;
 
     @Autowired
     public Bot() {
@@ -40,6 +44,7 @@ public class Bot extends TelegramLongPollingBot {
     @PostConstruct
     public void postConstruct() throws TelegramApiException {
         telegramBotsApi.registerBot(this);
+        stateMachine.transitTo(State.STARTED);
     }
 
     @Override
