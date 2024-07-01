@@ -11,9 +11,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage.SendMessageBuilder;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import ru.vienoulis.viHostelBot.handler.ViHostelHandler;
 import ru.vienoulis.viHostelBot.service.HandlersProcessor;
 import ru.vienoulis.viHostelBot.state.State;
 import ru.vienoulis.viHostelBot.state.StateMachine;
@@ -52,7 +55,9 @@ public class Bot extends TelegramLongPollingBot {
         log.info("onUpdateReceived.enter;");
         if (hasText(update)) {
             log.info("onUpdateReceived; has text: {}", update.getMessage().getText());
-            handlersProcessor.processMessage(update.getMessage());
+            var message = SendMessage.builder().chatId(update.getMessage().getChatId());
+            handlersProcessor.getAppliebleHandlers(update.getMessage())
+                    .forEach(h -> enrichAndSendMessage(h, message));
         }
         log.info("onUpdateReceived.exit;");
     }
@@ -69,5 +74,17 @@ public class Bot extends TelegramLongPollingBot {
         }
 
         return StringUtils.isNotBlank(update.getMessage().getText());
+    }
+
+    private void enrichAndSendMessage(ViHostelHandler h, SendMessageBuilder message) {
+        try {
+            log.info("enrichAndSendMessage.enter;");
+            h.enrich(message);
+            execute(message.build());
+            log.info("enrichAndSendMessage.exit;");
+        } catch (TelegramApiException e) {
+            log.error("enrichAndSendMessage.error;", e);
+            throw new RuntimeException(e);
+        }
     }
 }
