@@ -8,7 +8,7 @@ import ru.vienoulis.viHostelBot.state.State;
 
 @Slf4j
 @Service
-public class AddHandler extends ViHostelHandler {
+public class AddInProcessErrorHandler extends ViHostelHandler {
 
     @Override
     public String regex() {
@@ -18,13 +18,12 @@ public class AddHandler extends ViHostelHandler {
     @Override
     public void enrich(SendMessageBuilder message) {
         log.info("process.enter;");
-        stateMachine.transitTo(State.CHECK_IN);
-        message.text("AddHandler");
+        message.text("AddInProcessErrorHandler");
         log.info("process.exit;");
     }
 
     @Override
     public boolean validate(Message message) {
-        return stateMachine.currentState() != State.CHECK_IN;
+        return stateMachine.currentState() == State.CHECK_IN;
     }
 }
