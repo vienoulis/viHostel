@@ -21,7 +21,7 @@ public abstract class ViHostelHandler {
 
     public abstract String regex();
 
-    public abstract void enrich(SendMessageBuilder message);
+    public abstract void enrich(Message receivedMsg, SendMessageBuilder msgToSend);
 
     public abstract boolean validate(Message message);
 

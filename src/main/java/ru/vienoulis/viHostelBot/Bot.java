@@ -13,6 +13,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage.SendMessageBuilder;
+import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -57,7 +58,7 @@ public class Bot extends TelegramLongPollingBot {
             log.info("onUpdateReceived; has text: {}", update.getMessage().getText());
             var message = SendMessage.builder().chatId(update.getMessage().getChatId());
             handlersProcessor.getAppliebleHandlers(update.getMessage())
-                    .forEach(h -> enrichAndSendMessage(h, message));
+                    .forEach(h -> enrichAndSendMessage(h, message, update.getMessage()));
         }
         log.info("onUpdateReceived.exit;");
     }
@@ -76,11 +77,11 @@ public class Bot extends TelegramLongPollingBot {
         return StringUtils.isNotBlank(update.getMessage().getText());
     }
 
-    private void enrichAndSendMessage(ViHostelHandler h, SendMessageBuilder message) {
+    private void enrichAndSendMessage(ViHostelHandler h, SendMessageBuilder msgToSend, Message receivedMsg) {
         try {
             log.info("enrichAndSendMessage.enter;");
-            h.enrich(message);
-            execute(message.build());
+            h.enrich(receivedMsg, msgToSend);
+            execute(msgToSend.build());
             log.info("enrichAndSendMessage.exit;");
         } catch (TelegramApiException e) {
             log.error("enrichAndSendMessage.error;", e);
