@@ -21,6 +21,7 @@ public enum State {
     public enum CheckInSubState {
         NEED_NAME,
         NEED_PHONE,
+        NEED_PAY,
         NEED_ROOM
     }
 }

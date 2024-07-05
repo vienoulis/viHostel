@@ -10,24 +10,24 @@ import ru.vienoulis.viHostelBot.state.State.CheckInSubState;
 
 @Slf4j
 @Service
-public class AddNameHandler extends ViHostelHandler {
+public class AddHandler extends ViHostelHandler {
 
     @Override
     public String regex() {
-        return "^[А-Яа-я]+\\s[А-Яа-я]+\\s?[А-Яа-я]*\\s?$";
+        return "/add";
     }
 
     @Override
     public void enrich(SendMessageBuilder message) {
-        log.info("enrich.enter;");
-        message.text("Введите номер комнаты:");
-        stateMachine.currentState().setSubState(CheckInSubState.NEED_ROOM);
-        log.info("enrich.exit;");
+        log.info("process.enter;");
+        stateMachine.transitTo(State.CHECK_IN);
+        stateMachine.currentState().setSubState(CheckInSubState.NEED_NAME);
+        message.text("Введите ФИО посетителя");
+        log.info("process.exit;");
     }
 
     @Override
     public boolean validate(Message message) {
-        return stateMachine.currentState() == State.CHECK_IN
-                && stateMachine.currentState().getSubState() == CheckInSubState.NEED_NAME;
+        return stateMachine.currentState() != State.CHECK_IN;
     }
 }
