@@ -1,16 +1,22 @@
 package ru.vienoulis.viHostelBot.handler.checkin;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage.SendMessageBuilder;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.vienoulis.viHostelBot.handler.ViHostelHandler;
+import ru.vienoulis.viHostelBot.service.CheckInService;
 import ru.vienoulis.viHostelBot.state.State;
 import ru.vienoulis.viHostelBot.state.State.CheckInSubState;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class AddNameHandler extends ViHostelHandler {
+
+    private final CheckInService checkInService;
 
     @Override
     public String regex() {
@@ -18,9 +24,10 @@ public class AddNameHandler extends ViHostelHandler {
     }
 
     @Override
-    public void enrich(SendMessageBuilder message) {
+    public void enrich(Message receivedMsg, SendMessageBuilder msgToSend) {
         log.info("enrich.enter;");
-        message.text("Введите номер комнаты:");
+        checkInService.setName(receivedMsg.getText());
+        msgToSend.text("Введите номер комнаты:");
         stateMachine.currentState().setSubState(CheckInSubState.NEED_ROOM);
         log.info("enrich.exit;");
     }
