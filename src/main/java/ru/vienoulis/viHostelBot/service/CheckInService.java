@@ -2,15 +2,21 @@ package ru.vienoulis.viHostelBot.service;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.vienoulis.viHostelBot.dto.Visitor;
+import ru.vienoulis.viHostelBot.repo.Repository;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class CheckInService {
 
     private final AtomicReference<Visitor> visitor = new AtomicReference<>(null);
+
+    private final Repository repository;
 
     public void start() {
         log.info("start.enter;");
@@ -52,6 +58,16 @@ public class CheckInService {
         }
         visitor.updateAndGet(v -> v.toBuilder().isPaid(isPaid).build());
         log.info("setIsPaid.exit;");
+    }
+
+    public void saveAndClear() {
+        log.info("saveAndClear.enter; current visitor: {}", visitor.get());
+        if (Objects.isNull(visitor.get())) {
+            throw new RuntimeException("saveAndClear.error; Check in not started;");
+        }
+        repository.saveVisitor(visitor.get());
+        clear();
+        log.info("saveAndClear.exit;");
     }
 
     private void clear() {

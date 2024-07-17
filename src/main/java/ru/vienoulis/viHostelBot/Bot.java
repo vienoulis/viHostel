@@ -17,7 +17,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import ru.vienoulis.viHostelBot.handler.ViHostelHandler;
+import ru.vienoulis.viHostelBot.handler.message.AbstractMessageHandler;
 import ru.vienoulis.viHostelBot.service.HandlersProcessor;
 import ru.vienoulis.viHostelBot.state.State;
 import ru.vienoulis.viHostelBot.state.StateMachine;
@@ -54,10 +54,17 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         log.info("onUpdateReceived.enter;");
+
+        if (update.hasCallbackQuery()) {
+            var message = SendMessage.builder().chatId(update.getMessage().getChatId());
+            handlersProcessor.applyMessageHandlers(update.getMessage())
+                    .forEach(h -> enrichAndSendMessage(h, message, update.getMessage()));
+        }
+
         if (hasText(update)) {
             log.info("onUpdateReceived; has text: {}", update.getMessage().getText());
             var message = SendMessage.builder().chatId(update.getMessage().getChatId());
-            handlersProcessor.getAppliebleHandlers(update.getMessage())
+            handlersProcessor.applyMessageHandlers(update.getMessage())
                     .forEach(h -> enrichAndSendMessage(h, message, update.getMessage()));
         }
         log.info("onUpdateReceived.exit;");
@@ -77,7 +84,7 @@ public class Bot extends TelegramLongPollingBot {
         return StringUtils.isNotBlank(update.getMessage().getText());
     }
 
-    private void enrichAndSendMessage(ViHostelHandler h, SendMessageBuilder msgToSend, Message receivedMsg) {
+    private void enrichAndSendMessage(AbstractMessageHandler h, SendMessageBuilder msgToSend, Message receivedMsg) {
         try {
             log.info("enrichAndSendMessage.enter;");
             h.enrich(receivedMsg, msgToSend);

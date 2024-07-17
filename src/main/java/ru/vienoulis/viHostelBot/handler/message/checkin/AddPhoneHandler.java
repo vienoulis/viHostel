@@ -1,4 +1,4 @@
-package ru.vienoulis.viHostelBot.handler.checkin;
+package ru.vienoulis.viHostelBot.handler.message.checkin;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage.SendMessageBu
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import ru.vienoulis.viHostelBot.handler.ViHostelHandler;
+import ru.vienoulis.viHostelBot.handler.message.AbstractMessageHandler;
 import ru.vienoulis.viHostelBot.service.CheckInService;
 import ru.vienoulis.viHostelBot.state.State;
 import ru.vienoulis.viHostelBot.state.State.CheckInSubState;
@@ -17,7 +17,7 @@ import ru.vienoulis.viHostelBot.state.State.CheckInSubState;
 @Slf4j
 @Service
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class AddPhoneHandler extends ViHostelHandler {
+public class AddPhoneHandler extends AbstractMessageHandler {
 
     private final CheckInService checkInService;
 
