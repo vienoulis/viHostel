@@ -1,4 +1,4 @@
-package ru.vienoulis.viHostelBot.handler;
+package ru.vienoulis.viHostelBot.handler.message;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package ru.vienoulis.viHostelBot.handler.checkin;
+package ru.vienoulis.viHostelBot.handler.message.checkin;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
