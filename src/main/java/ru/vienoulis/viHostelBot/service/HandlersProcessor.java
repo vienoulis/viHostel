@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -27,7 +28,7 @@ public class HandlersProcessor {
 
     public Collection<AbstractCallbackHandler> applyMessageHandlers(CallbackQuery callbackQuery) {
         return callbackHandlers.stream()
-                .filter(h -> callbackQuery.getData().matches(h.regex()))
+                .filter(h -> StringUtils.equals(callbackQuery.getData(), h.callBackData()))
                 .filter(h -> h.validate(callbackQuery))
                 .collect(Collectors.toSet());
     }

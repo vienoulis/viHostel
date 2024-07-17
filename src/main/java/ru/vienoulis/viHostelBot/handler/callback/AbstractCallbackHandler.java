@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage.SendMessageBuilder;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import ru.vienoulis.viHostelBot.model.CallBack;
 import ru.vienoulis.viHostelBot.service.HandlersProcessor;
 import ru.vienoulis.viHostelBot.state.StateMachine;
 
@@ -14,16 +15,20 @@ import ru.vienoulis.viHostelBot.state.StateMachine;
 public abstract class AbstractCallbackHandler {
 
     @Autowired
-    private HandlersProcessor handlersProcessor;
+    protected HandlersProcessor handlersProcessor;
 
     @Autowired
-    private StateMachine stateMachine;
+    protected StateMachine stateMachine;
 
-    public abstract String regex();
+    protected abstract CallBack callBack();
 
     public abstract void enrich(CallbackQuery callbackQuery, SendMessageBuilder msgToSend);
 
     public abstract boolean validate(CallbackQuery callbackQuery);
+
+    public String callBackData() {
+        return callBack().name();
+    }
 
     @PostConstruct
     private void registerHandlers() {

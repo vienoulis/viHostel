@@ -70,7 +70,7 @@ public class CheckInService {
         log.info("saveAndClear.exit;");
     }
 
-    private void clear() {
+    public void clear() {
         log.info("clear.enter;");
         visitor.set(null);
         log.info("clear.exit;");

@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage.SendMessageBuilder;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import ru.vienoulis.viHostelBot.handler.message.AbstractMessageHandler;
 import ru.vienoulis.viHostelBot.service.CheckInService;
 import ru.vienoulis.viHostelBot.state.State;
 import ru.vienoulis.viHostelBot.state.State.CheckInSubState;
+
+import static ru.vienoulis.viHostelBot.model.CallBack.PAYMENT_DONE;
+import static ru.vienoulis.viHostelBot.model.CallBack.PAYMENT_REJECT;
 
 @Slf4j
 @Service
@@ -31,10 +33,8 @@ public class AddPhoneHandler extends AbstractMessageHandler {
         log.info("enrich.enter;");
         checkInService.setPhone(receivedMsg.getText());
         msgToSend.text("Оплатите посещение:");
-        var yesBtn = InlineKeyboardButton.builder().text("Оплатил").callbackData("yesCallbackData").build();
-        var noBtn = InlineKeyboardButton.builder().text("Не оплатил").callbackData("noCallbackData").build();
         msgToSend.replyMarkup(InlineKeyboardMarkup.builder()
-                .keyboardRow(List.of(yesBtn, noBtn))
+                .keyboardRow(List.of(PAYMENT_DONE.createBtn(), PAYMENT_REJECT.createBtn()))
                 .build());
         stateMachine.currentState().setSubState(CheckInSubState.NEED_PAY);
         log.info("enrich.exit;");
