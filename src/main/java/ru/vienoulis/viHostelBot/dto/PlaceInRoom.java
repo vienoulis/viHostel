@@ -7,9 +7,7 @@ import lombok.ToString;
 @Data
 @Builder(toBuilder = true)
 @ToString
-public class Visitor {
-
-    String name;
-    String phone;
-    PlaceInRoom placeInRoom;
+public class PlaceInRoom {
+    int room;
+    int place;
 }
