@@ -2,7 +2,10 @@ package ru.vienoulis.viHostelBot.repo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import ru.vienoulis.viHostelBot.dto.Visitor;
 
 public class InMemoryRepositoryImpl implements Repository {
@@ -19,7 +22,12 @@ public class InMemoryRepositoryImpl implements Repository {
     }
 
     @Override
-    public Visitor getVisitorBy(Predicate<Visitor> predicate) {
-        return visitors.stream().filter(predicate).findFirst().orElse(null);
+    public Optional<Visitor> getVisitorBy(Predicate<Visitor> predicate) {
+        return visitors.stream().filter(predicate).findFirst();
+    }
+
+    @Override
+    public Set<Visitor> getVisitorsBy(Predicate<Visitor> predicate) {
+        return visitors.stream().filter(predicate).collect(Collectors.toSet());
     }
 }
