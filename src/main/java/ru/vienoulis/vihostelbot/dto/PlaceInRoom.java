@@ -1,4 +1,4 @@
-package ru.vienoulis.viHostelBot.dto;
+package ru.vienoulis.vihostelbot.dto;
 
 import lombok.Builder;
 import lombok.Data;

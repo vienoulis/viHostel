@@ -1,9 +1,9 @@
-package ru.vienoulis.viHostelBot.repo;
+package ru.vienoulis.vihostelbot.repo;
 
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import ru.vienoulis.viHostelBot.dto.Visitor;
+import ru.vienoulis.vihostelbot.dto.Visitor;
 
 public interface Repository {
 

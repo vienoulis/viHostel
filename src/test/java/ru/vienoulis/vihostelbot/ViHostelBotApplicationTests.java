@@ -1,4 +1,4 @@
-package ru.vienoulis.viHostelBot;
+package ru.vienoulis.vihostelbot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

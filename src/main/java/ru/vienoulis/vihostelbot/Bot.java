@@ -1,4 +1,4 @@
-package ru.vienoulis.viHostelBot;
+package ru.vienoulis.vihostelbot;
 
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;

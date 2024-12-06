@@ -1,4 +1,4 @@
-package ru.vienoulis.viHostelBot.repo;
+package ru.vienoulis.vihostelbot.repo;
 
 import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import ru.vienoulis.viHostelBot.dto.PlaceInRoom;
-import ru.vienoulis.viHostelBot.dto.Visitor;
+import ru.vienoulis.vihostelbot.dto.PlaceInRoom;
+import ru.vienoulis.vihostelbot.dto.Visitor;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
