@@ -11,12 +11,16 @@ public class StateService {
     @Getter
     private State previousState = State.INIT;
 
-    public void started() {
-        setCurrentState(State.STARTED);
+    public void ready() {
+        setCurrentState(State.READY);
     }
 
     public void error() {
         setCurrentState(State.ERROR);
+    }
+
+    public boolean isProcessStarted() {
+        return currentState == State.IN_PROCESS;
     }
 
     private void setCurrentState(State state) {

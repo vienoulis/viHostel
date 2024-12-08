@@ -37,12 +37,12 @@ public class Bot extends TelegramLongPollingBot {
     @PostConstruct
     public void postConstruct() throws TelegramApiException {
         telegramBotsApi.registerBot(this);
-        stateService.started();
+        stateService.ready();
     }
 
     @Override
     public void onUpdateReceived(Update update) {
-        log.info("onUpdateReceived.enter;");
+        log.info("onUpdateReceived.enter; state: {}", stateService.getCurrentState());
         log.info("onUpdateReceived.exit;");
     }
 

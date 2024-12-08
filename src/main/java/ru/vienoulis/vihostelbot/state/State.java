@@ -2,7 +2,7 @@ package ru.vienoulis.vihostelbot.state;
 
 public enum State {
     INIT,
-    STARTED,
+    READY,
     IN_PROCESS,
     ERROR;
     // todo 
