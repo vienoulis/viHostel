@@ -2,6 +2,7 @@ package ru.vienoulis.vihostelbot.state;
 
 import lombok.Getter;
 import org.springframework.stereotype.Service;
+import ru.vienoulis.vihostelbot.dto.Action;
 
 @Service
 public class StateService {
@@ -28,4 +29,9 @@ public class StateService {
         currentState = state;
     }
 
+    public void process(Action action) {
+        previousState = currentState;
+        currentState = State.IN_PROCESS;
+        currentState.setProcess(action);
+    }
 }
