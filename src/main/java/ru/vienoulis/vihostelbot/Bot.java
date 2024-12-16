@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
@@ -54,12 +55,26 @@ public class Bot extends TelegramLongPollingBot {
         if (stateService.getCurrentState() == State.READY) {
             addVisitorProcess.start();
             subscribers.add(addVisitorProcess);
-        } else
-            if (stateService.isProcessStarted()) {
-            subscribers.forEach(s -> s.onMessage(update.getMessage()));
+        } else if (stateService.isProcessStarted()) {
+            subscribers.forEach(s -> s.onMessage(update.getMessage())
+                    .map(m -> {
+                        m.setChatId(update.getMessage().getChatId());
+                        return m;
+                    })
+                    .ifPresent(this::executeWithoutException));
         }
         log.info("onUpdateReceived.exit; state: {}", stateService.getCurrentState());
     }
+
+    private void executeWithoutException(SendMessage sendMessage) {
+        try {
+            execute(sendMessage);
+        } catch (Exception e) {
+            log.warn("", e);
+            throw new RuntimeException(e);
+        }
+    }
+
 
     @Override
     public String getBotUsername() {
