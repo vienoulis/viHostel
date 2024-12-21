@@ -1,16 +1,20 @@
 package ru.vienoulis.vihostelbot.state;
 
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.vienoulis.vihostelbot.dto.Action;
+import ru.vienoulis.vihostelbot.process.Process;
 
 @Service
+@Slf4j
 public class StateService {
 
     @Getter
     private State currentState = State.INIT;
     @Getter
     private State previousState = State.INIT;
+    private AtomicReference<Process> currentProcess = new AtomicReference<>();
 
     public void ready() {
         setCurrentState(State.READY);
@@ -29,9 +33,11 @@ public class StateService {
         currentState = state;
     }
 
-    public void process(Action action) {
+    public void process(Process process) {
+        log.info("process.enter; previous state: {}", currentState);
         previousState = currentState;
         currentState = State.IN_PROCESS;
-        currentState.setProcess(action);
+        currentProcess.set(process);
+        log.info("process.enter; current process: {}", currentProcess.getClass().getName());
     }
 }

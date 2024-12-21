@@ -20,7 +20,7 @@ public class AddVisitorProcess implements Process {
     @Override
     public void start() {
         log.info("start.enter;");
-        stateService.process(getAction());
+        stateService.process(this);
         log.info("start.exit;");
     }
 
@@ -28,7 +28,8 @@ public class AddVisitorProcess implements Process {
     public Optional<SendMessage> onMessage(Message message) {
         log.info("onMessage;");
         var sendMessage = new SendMessage();
-        sendMessage.setText("test");
+        sendMessage.setText("ФИО на заселение");
+        sendMessage.setChatId(message.getChatId());
         return Optional.of(sendMessage);
     }
 
