@@ -53,8 +53,8 @@ public class Bot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         log.info("onUpdateReceived.enter; state: {}", stateService.getCurrentState());
         var msg = update.getMessage();
-
-        processFinderService.getProcessCanStart(msg)
+        stateService.getCurrentProcessIfExist()
+                .or(() -> processFinderService.getProcessCanStart(msg))
                 .flatMap(p -> p.onMessage(msg))
                 .ifPresent(this::sendMessage);
         log.info("onUpdateReceived.exit; state: {}", stateService.getCurrentState());

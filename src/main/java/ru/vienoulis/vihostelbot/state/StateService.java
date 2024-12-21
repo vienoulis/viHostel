@@ -1,5 +1,6 @@
 package ru.vienoulis.vihostelbot.state;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,13 @@ public class StateService {
 
     public boolean isProcessStarted() {
         return currentState == State.IN_PROCESS;
+    }
+
+    public Optional<Process> getCurrentProcessIfExist() {
+        if (currentState == State.IN_PROCESS) {
+            return Optional.ofNullable(currentProcess.get());
+        }
+        return Optional.empty();
     }
 
     private void setCurrentState(State state) {

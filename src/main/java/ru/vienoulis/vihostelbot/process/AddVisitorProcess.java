@@ -8,21 +8,11 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.vienoulis.vihostelbot.dto.Action;
-import ru.vienoulis.vihostelbot.state.StateService;
 
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class AddVisitorProcess implements Process {
-
-    private final StateService stateService;
-
-    @Override
-    public void start() {
-        log.info("start.enter;");
-        stateService.process(this);
-        log.info("start.exit;");
-    }
+public class AddVisitorProcess extends AbstractProcess {
 
     @Override
     public Optional<SendMessage> onMessage(Message message) {
