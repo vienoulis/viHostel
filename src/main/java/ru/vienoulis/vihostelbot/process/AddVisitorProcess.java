@@ -41,11 +41,10 @@ public class AddVisitorProcess extends AbstractProcess {
             stateService.process(this);
         }
         return Optional.ofNullable(steps.poll())
-                .map(s -> s.processMessage(message))
-                .map(sm -> {
-                    sm.setChatId(message.getChatId());
-                    return sm;
-                });
+                .map(s -> SendMessage.builder()
+                        .chatId(message.getChatId())
+                        .text(s.processMessage(message))
+                        .build());
     }
 
     @Override

@@ -14,10 +14,8 @@ import ru.vienoulis.vihostelbot.step.Step;
 public class StartStep implements Step {
 
     @Override
-    public SendMessage processMessage(Message message) {
+    public String processMessage(Message message) {
         log.info("processMessage;");
-        return SendMessage.builder()
-                .text("StartStep")
-                .build();
+        return "StartStep";
     }
 }
