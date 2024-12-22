@@ -17,4 +17,9 @@ public class FinalStep implements Step {
         log.info("processMessage;");
         return "FinalStep";
     }
+
+    @Override
+    public boolean canApplied(Message message) {
+        return true;
+    }
 }

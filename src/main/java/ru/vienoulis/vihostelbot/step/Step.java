@@ -6,4 +6,5 @@ public interface Step {
 
     String processMessage(Message message);
 
+    boolean canApplied(Message message);
 }

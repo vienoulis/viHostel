@@ -17,4 +17,10 @@ public class MiddleStep implements Step {
         log.info("processMessage;");
         return "MiddleStep";
     }
+
+
+    @Override
+    public boolean canApplied(Message message) {
+        return true;
+    }
 }

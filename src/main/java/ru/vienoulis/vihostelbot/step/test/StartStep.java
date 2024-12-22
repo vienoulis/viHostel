@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.vienoulis.vihostelbot.step.Step;
 
@@ -17,5 +16,10 @@ public class StartStep implements Step {
     public String processMessage(Message message) {
         log.info("processMessage;");
         return "StartStep";
+    }
+
+    @Override
+    public boolean canApplied(Message message) {
+        return true;
     }
 }

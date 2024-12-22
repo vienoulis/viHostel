@@ -49,6 +49,7 @@ public class AddVisitorProcess extends AbstractProcess {
             stateService.process(this);
         }
         var result = Optional.ofNullable(steps.poll())
+                .filter(s -> s.canApplied(message))
                 .map(s -> SendMessage.builder()
                         .chatId(message.getChatId())
                         .text(s.processMessage(message))
