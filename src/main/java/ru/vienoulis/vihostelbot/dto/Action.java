@@ -5,6 +5,7 @@ import lombok.Getter;
 @Getter
 public enum Action {
     ADD,
+    ALL,
     TEST,
     CANCEL
 }

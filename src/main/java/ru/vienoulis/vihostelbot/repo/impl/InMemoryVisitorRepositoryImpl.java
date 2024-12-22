@@ -1,5 +1,6 @@
 package ru.vienoulis.vihostelbot.repo.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,12 @@ public class InMemoryVisitorRepositoryImpl implements Repository<Visitor> {
 
     public InMemoryVisitorRepositoryImpl() {
         this.visitors = new ArrayList<>();
+        this.visitors.add(Visitor.builder()
+                .name("Тестовый Тестер Тестович")
+                .placeInRoom(123)
+                .phone("+79999999999")
+                .paidBefore(LocalDate.now())
+                .build());
     }
 
     @Override
