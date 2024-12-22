@@ -70,7 +70,7 @@ public class MultyStepProcess extends AbstractProcess {
         reload();
         stateService.ready();
         return Optional.of(SendMessage.builder()
-                .text("Процесс заселения прерван.")
+                .text(stepGenerator.onCancelMessage())
                 .chatId(message.getChatId()));
     }
 

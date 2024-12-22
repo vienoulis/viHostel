@@ -27,6 +27,11 @@ public class TestStepGenerator implements StepGenerator {
     }
 
     @Override
+    public String onCancelMessage() {
+        return "Процесс прерван, слабак";
+    }
+
+    @Override
     public Action getAction() {
         return Action.TEST;
     }

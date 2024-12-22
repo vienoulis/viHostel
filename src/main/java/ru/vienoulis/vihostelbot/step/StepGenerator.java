@@ -7,5 +7,7 @@ public interface StepGenerator {
 
     Queue<Step> getStep();
 
+    String onCancelMessage();
+
     Action getAction();
 }
