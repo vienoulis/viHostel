@@ -15,7 +15,8 @@ public class FinalStep implements Step {
     @Override
     public String processMessage(Message message) {
         log.info("processMessage;");
-        return "FinalStep";
+        return "Как ты догадался? Я как раз и думал о '%s'. Тестовый процесс завершен. Спасибо."
+                .formatted(message.getText());
     }
 
     @Override

@@ -12,37 +12,26 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.vienoulis.vihostelbot.dto.Action;
 import ru.vienoulis.vihostelbot.state.StateService;
 import ru.vienoulis.vihostelbot.step.Step;
-import ru.vienoulis.vihostelbot.step.test.FinalStep;
-import ru.vienoulis.vihostelbot.step.test.MiddleStep;
-import ru.vienoulis.vihostelbot.step.test.StartStep;
+import ru.vienoulis.vihostelbot.step.StepGenerator;
 
 @Component
 @Slf4j
-//@RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class AddVisitorProcess extends AbstractProcess {
+public class MultyStepProcess extends AbstractProcess {
 
-    private final Queue<Step> steps;
-    private final StartStep startStep;
-    private final MiddleStep middleStep;
-    private final FinalStep finalStep;
+    private final Queue<Step> steps = new LinkedList<>();
+    private final StepGenerator stepGenerator;
 
     @Autowired
-    public AddVisitorProcess(StartStep startStep, MiddleStep middleStep, FinalStep finalStep,
-            StateService stateService) {
+    public MultyStepProcess(StateService stateService, StepGenerator stepGenerator) {
         super(stateService);
-        steps = new LinkedList<>();
-        this.startStep = startStep;
-        this.middleStep = middleStep;
-        this.finalStep = finalStep;
-        steps.add(startStep);
-        steps.add(middleStep);
-        steps.add(finalStep);
+        this.stepGenerator = stepGenerator;
     }
 
     @Override
     protected void onProcessStart() {
         log.info("onProcessStart.enter;");
         stateService.process(this);
+        steps.addAll(stepGenerator.getStep());
         log.info("onProcessStart.exit;");
     }
 
@@ -72,6 +61,11 @@ public class AddVisitorProcess extends AbstractProcess {
     }
 
     @Override
+    public Action getAction() {
+        return stepGenerator.getAction();
+    }
+
+    @Override
     public Optional<SendMessageBuilder> messageOnCancel(Message message) {
         reload();
         stateService.ready();
@@ -83,14 +77,7 @@ public class AddVisitorProcess extends AbstractProcess {
     private void reload() {
         log.info("reload.enter;");
         steps.clear();
-        steps.add(startStep);
-        steps.add(middleStep);
-        steps.add(finalStep);
         log.info("reload.exit;");
     }
 
-    @Override
-    public Action getAction() {
-        return Action.ADD;
-    }
 }

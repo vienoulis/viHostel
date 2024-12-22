@@ -16,7 +16,7 @@ public class MiddleStep implements Step {
     @Override
     public String processMessage(Message message) {
         log.info("processMessage;");
-        return "MiddleStep";
+        return "Добро пожаловать на следующий тестовый шаг. Для продолжение отгадай о чем я сейчас думаю?";
     }
 
 

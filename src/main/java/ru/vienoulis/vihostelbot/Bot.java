@@ -63,7 +63,11 @@ public class Bot extends TelegramLongPollingBot {
                 .or(stateService::getCurrentProcessIfExist)
                 .or(() -> processFinderService.getProcessCanStart(msg))
                 .flatMap(p -> p.processAndGetMessage(msg))
-                .ifPresent(this::sendMessage);
+                .ifPresentOrElse(this::sendMessage, () ->
+                        sendMessage(SendMessage.builder()
+                                .chatId(msg.getChatId())
+                                .text("Сам ты '%s'".formatted(msg.getText()))
+                                .build()));
         log.info("onUpdateReceived.exit; state: {}", stateService.getCurrentState());
     }
 
@@ -74,6 +78,7 @@ public class Bot extends TelegramLongPollingBot {
 
     private void sendMessage(SendMessage sendMessage) {
         try {
+            log.info("sendMessage: text: {}", sendMessage.getText());
             execute(sendMessage);
         } catch (Exception e) {
             log.warn("", e);
