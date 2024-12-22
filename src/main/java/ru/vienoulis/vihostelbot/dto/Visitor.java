@@ -3,11 +3,9 @@ package ru.vienoulis.vihostelbot.dto;
 import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
 
 @Data
 @Builder(toBuilder = true)
-@ToString
 public class Visitor {
 
     String name;
@@ -15,4 +13,9 @@ public class Visitor {
     //    PlaceInRoom placeInRoom;
     int placeInRoom;
     LocalDate paidBefore;
+
+    @Override
+    public String toString() {
+        return "Имя: '%s', телефон: '%s', комната: '%s', оплата: '%s'".formatted(name, phone, placeInRoom, paidBefore);
+    }
 }
