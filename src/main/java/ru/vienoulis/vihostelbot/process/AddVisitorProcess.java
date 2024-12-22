@@ -49,29 +49,18 @@ public class AddVisitorProcess extends AbstractProcess {
 
     @Override
     public Optional<SendMessageBuilder> onMessage(Message message) {
-        log.info("onMessage.enter;");
-//        return messageBuilder.text("");
-
-//        message.setText("AddVisitorProcess");
-//        var result = Optional.ofNullable(steps.peek())
-//                .filter(s -> s.canApplied(message))
-//                .map(__ -> steps.poll())
-//                .map(s -> SendMessage.builder()
-//                        .chatId(message.getChatId())
-//                        .text(s.processMessage(message))
-//                        .build())
-//                .or(() -> Optional.ofNullable(SendMessage.builder()
-//                        .chatId(message.getChatId())
-//                        .text("Сообщение не принято")
-//                        .build()));
-//
-//        return messageBuilder;
-        return Optional.empty();
+        log.info("onMessage;");
+        if (!steps.isEmpty() && !steps.peek().canApplied(message)) {
+            return Optional.of(SendMessage.builder().text("Сообщение не принято"));
+        }
+        return Optional.ofNullable(steps.poll())
+                .map(s -> s.processMessage(message))
+                .map(s -> SendMessage.builder().text(s));
     }
 
     @Override
     protected boolean isProcessFinish() {
-        return true;
+        return steps.isEmpty();
     }
 
     @Override
