@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage.SendMessageBuilder;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.vienoulis.vihostelbot.dto.Action;
 import ru.vienoulis.vihostelbot.state.StateService;
@@ -21,7 +22,6 @@ import ru.vienoulis.vihostelbot.step.test.StartStep;
 public class AddVisitorProcess extends AbstractProcess {
 
     private final Queue<Step> steps;
-    private final StateService stateService;
     private final StartStep startStep;
     private final MiddleStep middleStep;
     private final FinalStep finalStep;
@@ -29,6 +29,7 @@ public class AddVisitorProcess extends AbstractProcess {
     @Autowired
     public AddVisitorProcess(StartStep startStep, MiddleStep middleStep, FinalStep finalStep,
             StateService stateService) {
+        super(stateService);
         steps = new LinkedList<>();
         this.startStep = startStep;
         this.middleStep = middleStep;
@@ -36,48 +37,58 @@ public class AddVisitorProcess extends AbstractProcess {
         steps.add(startStep);
         steps.add(middleStep);
         steps.add(finalStep);
-        this.stateService = stateService;
+    }
+
+    @Override
+    protected void onProcessStart() {
+        log.info("onProcessStart.enter;");
+        stateService.process(this);
+        log.info("onProcessStart.exit;");
     }
 
 
     @Override
-    public Optional<SendMessage> onMessage(Message message) {
+    public Optional<SendMessageBuilder> onMessage(Message message) {
         log.info("onMessage.enter;");
+//        return messageBuilder.text("");
 
-        if (!stateService.isProcessStarted()) {
-            log.info("onMessage; start new process");
-            stateService.process(this);
-        }
-        var result = Optional.ofNullable(steps.peek())
-                .filter(s -> s.canApplied(message))
-                .map(__ -> steps.poll())
-                .map(s -> SendMessage.builder()
-                        .chatId(message.getChatId())
-                        .text(s.processMessage(message))
-                        .build())
-                .or(() -> Optional.ofNullable(SendMessage.builder()
-                        .chatId(message.getChatId())
-                        .text("Сообщение не принято")
-                        .build()));
-
-        if (steps.isEmpty()) {
-            log.info("onMessage; finish process");
-            stateService.ready();
-            reload();
-        }
-
-        log.info("onMessage.exit;");
-        return result;
+//        message.setText("AddVisitorProcess");
+//        var result = Optional.ofNullable(steps.peek())
+//                .filter(s -> s.canApplied(message))
+//                .map(__ -> steps.poll())
+//                .map(s -> SendMessage.builder()
+//                        .chatId(message.getChatId())
+//                        .text(s.processMessage(message))
+//                        .build())
+//                .or(() -> Optional.ofNullable(SendMessage.builder()
+//                        .chatId(message.getChatId())
+//                        .text("Сообщение не принято")
+//                        .build()));
+//
+//        return messageBuilder;
+        return Optional.empty();
     }
 
     @Override
-    public Optional<SendMessage> messageOnCancel(Message message) {
+    protected boolean isProcessFinish() {
+        return true;
+    }
+
+    @Override
+    protected void onProcessFinish() {
+        log.info("onFinish.enter;");
+        stateService.ready();
+        reload();
+        log.info("onFinish.exit;");
+    }
+
+    @Override
+    public Optional<SendMessageBuilder> messageOnCancel(Message message) {
         reload();
         stateService.ready();
         return Optional.of(SendMessage.builder()
                 .text("Процесс заселения прерван.")
-                .chatId(message.getChatId())
-                .build());
+                .chatId(message.getChatId()));
     }
 
     private void reload() {

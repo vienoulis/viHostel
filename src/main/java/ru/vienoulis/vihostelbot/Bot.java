@@ -62,7 +62,7 @@ public class Bot extends TelegramLongPollingBot {
         getCancelProcessIfExist(msg)
                 .or(stateService::getCurrentProcessIfExist)
                 .or(() -> processFinderService.getProcessCanStart(msg))
-                .flatMap(p -> p.onMessage(msg))
+                .flatMap(p -> p.processAndGetMessage(msg))
                 .ifPresent(this::sendMessage);
         log.info("onUpdateReceived.exit; state: {}", stateService.getCurrentState());
     }
