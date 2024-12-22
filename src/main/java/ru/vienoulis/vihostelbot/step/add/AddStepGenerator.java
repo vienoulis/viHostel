@@ -18,15 +18,19 @@ public class AddStepGenerator implements StepGenerator {
 
     private final Queue<Step> steps = new LinkedList<>();
 
-    private final StartAddStep startAddStep;
-    private final FIOAddedStep fioAddedStep;
-    private final AddFinishStep addFinishStep;
+    private final StartAndRequestFIOStep startAndRequestFIOStep;
+    private final FIOAddedRequestPlaysStep fioAddedRequestPlaysStep;
+    private final AddPlaysAndRequestDaysStep addPlaysAndRequestDaysStep;
+    private final AddDaysAndRequestPhoneStep addDaysAndRequestPhoneStep;
+    private final AddPhoneAndFinishStep addPhoneAndFinishStep;
 
     @PostConstruct
     public void postConstruct() {
-        steps.add(startAddStep);
-        steps.add(fioAddedStep);
-        steps.add(addFinishStep);
+        steps.add(startAndRequestFIOStep);
+        steps.add(fioAddedRequestPlaysStep);
+        steps.add(addPlaysAndRequestDaysStep);
+        steps.add(addDaysAndRequestPhoneStep);
+        steps.add(addPhoneAndFinishStep);
     }
 
     @Override

@@ -3,13 +3,16 @@ package ru.vienoulis.vihostelbot.repo;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
-import ru.vienoulis.vihostelbot.dto.Visitor;
 
-public interface Repository {
+public interface Repository<T> {
 
-    void saveVisitor(Visitor visitor);
+    T getTransitionalEntry();
 
-    Optional<Visitor> getVisitorBy(Predicate<Visitor> predicate);
+    void setTransitionalEntry(T entry);
 
-    Set<Visitor> getVisitorsBy(Predicate<Visitor> predicate);
+    void saveEntry(T entry);
+
+    Optional<T> getEntryBy(Predicate<T> predicate);
+
+    Set<T> getEntrysBy(Predicate<T> predicate);
 }
