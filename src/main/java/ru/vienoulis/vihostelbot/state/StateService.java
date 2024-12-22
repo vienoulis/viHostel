@@ -18,6 +18,7 @@ public class StateService {
     private AtomicReference<Process> currentProcess = new AtomicReference<>();
 
     public void ready() {
+        currentProcess.set(null);
         setCurrentState(State.READY);
     }
 
@@ -46,6 +47,6 @@ public class StateService {
         previousState = currentState;
         currentState = State.IN_PROCESS;
         currentProcess.set(process);
-        log.info("process.enter; current process: {}", currentProcess.getClass().getName());
+        log.info("process.enter; current process: {}", currentProcess.get().getClass().getSimpleName());
     }
 }

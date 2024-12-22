@@ -22,11 +22,17 @@ public class AddVisitorProcess extends AbstractProcess {
 
     private final Queue<Step> steps;
     private final StateService stateService;
+    private final StartStep startStep;
+    private final MiddleStep middleStep;
+    private final FinalStep finalStep;
 
     @Autowired
     public AddVisitorProcess(StartStep startStep, MiddleStep middleStep, FinalStep finalStep,
             StateService stateService) {
         steps = new LinkedList<>();
+        this.startStep = startStep;
+        this.middleStep = middleStep;
+        this.finalStep = finalStep;
         steps.add(startStep);
         steps.add(middleStep);
         steps.add(finalStep);
@@ -36,15 +42,34 @@ public class AddVisitorProcess extends AbstractProcess {
 
     @Override
     public Optional<SendMessage> onMessage(Message message) {
-        log.info("onMessage;");
+        log.info("onMessage.enter;");
+
         if (!stateService.isProcessStarted()) {
+            log.info("onMessage; start new process");
             stateService.process(this);
         }
-        return Optional.ofNullable(steps.poll())
+        var result = Optional.ofNullable(steps.poll())
                 .map(s -> SendMessage.builder()
                         .chatId(message.getChatId())
                         .text(s.processMessage(message))
                         .build());
+
+        if (steps.isEmpty()) {
+            log.info("onMessage; finish process");
+            stateService.ready();
+            reload();
+        }
+
+        log.info("onMessage.exit;");
+        return result;
+    }
+
+    private void reload() {
+        log.info("reload.enter;");
+        steps.add(startStep);
+        steps.add(middleStep);
+        steps.add(finalStep);
+        log.info("reload.exit;");
     }
 
     @Override
