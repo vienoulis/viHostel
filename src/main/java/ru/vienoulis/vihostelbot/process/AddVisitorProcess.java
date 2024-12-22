@@ -70,8 +70,19 @@ public class AddVisitorProcess extends AbstractProcess {
         return result;
     }
 
+    @Override
+    public Optional<SendMessage> messageOnCancel(Message message) {
+        reload();
+        stateService.ready();
+        return Optional.of(SendMessage.builder()
+                .text("Процесс заселения прерван.")
+                .chatId(message.getChatId())
+                .build());
+    }
+
     private void reload() {
         log.info("reload.enter;");
+        steps.clear();
         steps.add(startStep);
         steps.add(middleStep);
         steps.add(finalStep);

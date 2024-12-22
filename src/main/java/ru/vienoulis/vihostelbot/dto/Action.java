@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public enum Action {
-    ADD
+    ADD, CANCEL
 }
