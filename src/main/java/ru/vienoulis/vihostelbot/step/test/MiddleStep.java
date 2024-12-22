@@ -2,6 +2,7 @@ package ru.vienoulis.vihostelbot.step.test;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -21,6 +22,6 @@ public class MiddleStep implements Step {
 
     @Override
     public boolean canApplied(Message message) {
-        return true;
+        return StringUtils.equals(message.getText(), "123");
     }
 }

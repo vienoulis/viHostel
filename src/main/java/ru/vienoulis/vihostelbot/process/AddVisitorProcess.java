@@ -48,12 +48,17 @@ public class AddVisitorProcess extends AbstractProcess {
             log.info("onMessage; start new process");
             stateService.process(this);
         }
-        var result = Optional.ofNullable(steps.poll())
+        var result = Optional.ofNullable(steps.peek())
                 .filter(s -> s.canApplied(message))
+                .map(__ -> steps.poll())
                 .map(s -> SendMessage.builder()
                         .chatId(message.getChatId())
                         .text(s.processMessage(message))
-                        .build());
+                        .build())
+                .or(() -> Optional.ofNullable(SendMessage.builder()
+                        .chatId(message.getChatId())
+                        .text("Сообщение не принято")
+                        .build()));
 
         if (steps.isEmpty()) {
             log.info("onMessage; finish process");

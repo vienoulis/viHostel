@@ -15,7 +15,7 @@ public class StartStep implements Step {
     @Override
     public String processMessage(Message message) {
         log.info("processMessage;");
-        return "StartStep";
+        return "Введите: 123";
     }
 
     @Override
