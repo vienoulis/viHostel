@@ -14,21 +14,16 @@ public class TestStepGenerator implements StepGenerator {
     private final Queue<Step> steps;
 
     @Autowired
-    public TestStepGenerator(StartStep startStep, MiddleStep middleStep, FinalStep finalStep) {
+    public TestStepGenerator(StartStep startStep, MiddleStep middleStep, TestFinalStep testFinalStep) {
         steps = new LinkedList<>();
         steps.add(startStep);
         steps.add(middleStep);
-        steps.add(finalStep);
+        steps.add(testFinalStep);
     }
 
     @Override
     public Queue<Step> getStep() {
         return steps;
-    }
-
-    @Override
-    public String onCancelMessage() {
-        return "Процесс прерван, слабак";
     }
 
     @Override

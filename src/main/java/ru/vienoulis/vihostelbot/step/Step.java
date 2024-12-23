@@ -4,7 +4,11 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 public interface Step {
 
-    String processMessage(Message message);
+    String getMessage();
 
-    boolean canApplied(Message message);
+    boolean tryApply(Message response);
+
+    String onFail(Message response);
+
+    boolean needResponse();
 }

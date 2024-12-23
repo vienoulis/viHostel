@@ -57,7 +57,7 @@ public class Bot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        log.info("onUpdateReceived.enter; state: {}", stateService.getCurrentState());
+        log.info("onUpdateReceived.enter; id: {}", update.getUpdateId());
         var msg = update.getMessage();
         getCancelProcessIfExist(msg)
                 .or(stateService::getCurrentProcessIfExist)
@@ -68,7 +68,7 @@ public class Bot extends TelegramLongPollingBot {
                                 .chatId(msg.getChatId())
                                 .text("Сам ты '%s'".formatted(msg.getText()))
                                 .build()));
-        log.info("onUpdateReceived.exit; state: {}", stateService.getCurrentState());
+        log.info("onUpdateReceived.exit; id: {}", update.getUpdateId());
     }
 
     private Optional<Process> getCancelProcessIfExist(Message msg) {

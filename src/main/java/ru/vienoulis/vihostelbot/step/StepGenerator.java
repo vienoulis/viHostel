@@ -7,7 +7,9 @@ public interface StepGenerator {
 
     Queue<Step> getStep();
 
-    String onCancelMessage();
-
     Action getAction();
+
+    default String onCancelMessage() {
+        return "Процесс %s остановлен".formatted(getAction());
+    }
 }

@@ -1,8 +1,10 @@
 package ru.vienoulis.vihostelbot.process;
 
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Queue;
+import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,7 @@ public class MultyStepProcess extends AbstractProcess {
 
     private final Queue<Step> steps = new LinkedList<>();
     private final StepGenerator stepGenerator;
+    private final AtomicReference<Step> awaitResponseStep = new AtomicReference<>();
 
     @Autowired
     public MultyStepProcess(StateService stateService, StepGenerator stepGenerator) {
@@ -35,21 +38,40 @@ public class MultyStepProcess extends AbstractProcess {
         log.info("onProcessStart.exit;");
     }
 
-
     @Override
     public Optional<SendMessageBuilder> onMessage(Message message) {
-        log.info("onMessage;");
-        if (!steps.isEmpty() && !steps.peek().canApplied(message)) {
-            return Optional.of(SendMessage.builder().text("Сообщение не принято"));
-        }
-        return Optional.ofNullable(steps.poll())
-                .map(s -> s.processMessage(message))
+        log.info("onMessage; text: {}", message.getText());
+        return tryApplyIfNeedResponse(message)
+                .or(this::startNextStepMessage)
                 .map(s -> SendMessage.builder().text(s));
+    }
+
+
+    private Optional<String> tryApplyIfNeedResponse(Message message) {
+        log.info("tryApplyIfNeedResponse;enter;");
+        var needResponseStep = awaitResponseStep.get();
+
+        if (Objects.isNull(needResponseStep)) {
+            log.info("tryApplyIfNeedResponse.exit; hasn't step for response");
+            return Optional.empty();
+        }
+
+        if (needResponseStep.tryApply(message)) {
+            log.info("tryApplyIfNeedResponse; message apply success, drop await response step and try get next step.");
+            awaitResponseStep.set(null);
+            return Optional.empty();
+        }
+
+        log.info("tryApplyIfNeedResponse.exit; apply fail, return fail message");
+        return Optional.of(needResponseStep.onFail(message));
     }
 
     @Override
     protected boolean isProcessFinish() {
-        return steps.isEmpty();
+        log.debug("isProcessFinish.enter;");
+        var result = Objects.isNull(awaitResponseStep.get()) && steps.isEmpty();
+        log.debug("isProcessFinish.exit;");
+        return result;
     }
 
     @Override
@@ -67,17 +89,34 @@ public class MultyStepProcess extends AbstractProcess {
 
     @Override
     public Optional<SendMessageBuilder> messageOnCancel(Message message) {
+        log.debug("messageOnCancel.enter;");
         reload();
         stateService.ready();
-        return Optional.of(SendMessage.builder()
+        var result = Optional.of(SendMessage.builder()
                 .text(stepGenerator.onCancelMessage())
                 .chatId(message.getChatId()));
+        log.debug("messageOnCancel.exit; result: {}", result);
+        return result;
     }
 
     private void reload() {
         log.info("reload.enter;");
         steps.clear();
+        awaitResponseStep.set(null);
         log.info("reload.exit;");
     }
 
+
+    private Optional<String> startNextStepMessage() {
+        return Optional.ofNullable(steps.poll())
+                .map(this::saveStepIfNeedResponse)
+                .map(Step::getMessage);
+    }
+
+    private Step saveStepIfNeedResponse(Step step) {
+        if (step.needResponse()) {
+            awaitResponseStep.set(step);
+        }
+        return step;
+    }
 }

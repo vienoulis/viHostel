@@ -15,7 +15,7 @@ public class StateService {
     private State currentState = State.INIT;
     @Getter
     private State previousState = State.INIT;
-    private AtomicReference<Process> currentProcess = new AtomicReference<>();
+    private final AtomicReference<Process> currentProcess = new AtomicReference<>();
 
     public void ready() {
         currentProcess.set(null);
@@ -32,14 +32,17 @@ public class StateService {
 
     public Optional<Process> getCurrentProcessIfExist() {
         if (currentState == State.IN_PROCESS) {
+            log.debug("getCurrentProcessIfExist; return: {}", currentProcess.get());
             return Optional.ofNullable(currentProcess.get());
         }
         return Optional.empty();
     }
 
     private void setCurrentState(State state) {
+        log.info("setCurrentState.enter; before: {}", currentState);
         previousState = currentState;
         currentState = state;
+        log.info("setCurrentState.exit; after: {}", currentState);
     }
 
     public void process(Process process) {
@@ -47,6 +50,6 @@ public class StateService {
         previousState = currentState;
         currentState = State.IN_PROCESS;
         currentProcess.set(process);
-        log.info("process.enter; current process: {}", currentProcess.get().getClass().getSimpleName());
+        log.info("process.enter; process action: {}", currentProcess.get().getAction());
     }
 }

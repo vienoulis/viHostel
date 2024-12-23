@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import ru.vienoulis.vihostelbot.dto.Action;
 import ru.vienoulis.vihostelbot.step.Step;
 import ru.vienoulis.vihostelbot.step.StepGenerator;
-import ru.vienoulis.vihostelbot.step.add.AddPhoneAndFinishStep;
 
 @Slf4j
 @Component
@@ -19,22 +18,16 @@ public class AllStepGenerator implements StepGenerator {
 
     private final Queue<Step> steps = new LinkedList<>();
 
-    private final StartAllStep startAllStep;
+    private final AllSingleStep allSingleStep;
 
     @PostConstruct
     public void postConstruct() {
-        steps.add(startAllStep);
+        steps.add(allSingleStep);
     }
 
     @Override
     public Queue<Step> getStep() {
         return steps;
-    }
-
-    @Override
-    public String onCancelMessage() {
-        log.info("onCancelMessage; no-op");
-        return "";
     }
 
     @Override

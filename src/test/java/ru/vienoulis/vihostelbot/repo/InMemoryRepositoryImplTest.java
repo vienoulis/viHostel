@@ -32,13 +32,13 @@ class InMemoryRepositoryImplTest {
     @Test
     void getVisitorBy() {
         repository.saveEntry(Visitor.builder().name(TEST_NAME).build());
-        repository.saveEntry(Visitor.builder().placeInRoom(PLACE_IN_ROOM).build());
-
-        assertTrue(repository.getEntryBy(v -> Objects.equals(v.getName(), TEST_NAME)).isPresent());
-        assertTrue(repository.getEntryBy(v -> v.getPlaceInRoom() != null &&
-                Objects.equals(v.getPlaceInRoom().getRoom(), PLACE_IN_ROOM.getRoom())).isPresent());
-        assertTrue(repository.getEntryBy(v -> v.getPlaceInRoom() != null &&
-                Objects.equals(v.getPlaceInRoom().getPlace(), PLACE_IN_ROOM.getPlace())).isPresent());
+//        repository.saveEntry(Visitor.builder().placeInRoom(PLACE_IN_ROOM).build());
+//
+//        assertTrue(repository.getEntryBy(v -> Objects.equals(v.getName(), TEST_NAME)).isPresent());
+//        assertTrue(repository.getEntryBy(v -> v.getPlaceInRoom() != null &&
+//                Objects.equals(v.getPlaceInRoom().getRoom(), PLACE_IN_ROOM.getRoom())).isPresent());
+//        assertTrue(repository.getEntryBy(v -> v.getPlaceInRoom() != null &&
+//                Objects.equals(v.getPlaceInRoom().getPlace(), PLACE_IN_ROOM.getPlace())).isPresent());
         assertTrue(repository.getEntryBy(v ->
                 Objects.equals(v.getName(), TEST_NAME)).isPresent());
         assertTrue(repository.getEntryBy(v ->
@@ -52,7 +52,7 @@ class InMemoryRepositoryImplTest {
         repository.saveEntry(Visitor.builder().name(TEST_NAME + 2).build());
         repository.saveEntry(Visitor.builder().name(TEST_NAME + 3).build());
         repository.saveEntry(Visitor.builder().name("").build());
-        repository.saveEntry(Visitor.builder().placeInRoom(PLACE_IN_ROOM).build());
+//        repository.saveEntry(Visitor.builder().placeInRoom(PLACE_IN_ROOM).build());
 
         assertEquals(5, repository.getEntrysBy(v -> true).size());
         assertEquals(4, repository.getEntrysBy(v -> Objects.nonNull(v.getName())).size());

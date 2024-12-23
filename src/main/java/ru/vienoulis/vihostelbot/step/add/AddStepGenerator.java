@@ -1,6 +1,7 @@
 package ru.vienoulis.vihostelbot.step.add;
 
 import jakarta.annotation.PostConstruct;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
 import lombok.RequiredArgsConstructor;
@@ -16,31 +17,26 @@ import ru.vienoulis.vihostelbot.step.StepGenerator;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class AddStepGenerator implements StepGenerator {
 
-    private final Queue<Step> steps = new LinkedList<>();
+    private final Deque<Step> steps = new LinkedList<>();
 
-    private final StartAndRequestFIOStep startAndRequestFIOStep;
-    private final FIOAddedRequestPlaysStep fioAddedRequestPlaysStep;
-    private final AddPlaysAndRequestDaysStep addPlaysAndRequestDaysStep;
-    private final AddDaysAndRequestPhoneStep addDaysAndRequestPhoneStep;
-    private final AddPhoneAndFinishStep addPhoneAndFinishStep;
+    private final RequestFIOStep requestFIOStep; // введите имя
+    private final RequestDaysStep requestDaysStep; // введите количество дней
+    private final RequestPlaysStep requestPlaysStep;
+    private final RequestPhoneStep addDaysAndRequestPhoneStep;
+    private final AddFinishStep addFinishStep;
 
     @PostConstruct
     public void postConstruct() {
-        steps.add(startAndRequestFIOStep);
-        steps.add(fioAddedRequestPlaysStep);
-        steps.add(addPlaysAndRequestDaysStep);
+        steps.add(requestFIOStep);
+        steps.add(requestDaysStep);
+        steps.add(requestPlaysStep);
         steps.add(addDaysAndRequestPhoneStep);
-        steps.add(addPhoneAndFinishStep);
+        steps.add(addFinishStep);
     }
 
     @Override
     public Queue<Step> getStep() {
         return steps;
-    }
-
-    @Override
-    public String onCancelMessage() {
-        return "Процесс заселения прерван.";
     }
 
     @Override

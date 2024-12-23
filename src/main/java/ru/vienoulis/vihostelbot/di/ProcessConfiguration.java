@@ -1,6 +1,7 @@
 package ru.vienoulis.vihostelbot.di;
 
 import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.vienoulis.vihostelbot.process.MultyStepProcess;
@@ -11,6 +12,7 @@ import ru.vienoulis.vihostelbot.step.add.AddStepGenerator;
 import ru.vienoulis.vihostelbot.step.list.AllStepGenerator;
 import ru.vienoulis.vihostelbot.step.test.TestStepGenerator;
 
+@Slf4j
 @Configuration
 public class ProcessConfiguration {
 
@@ -36,11 +38,13 @@ public class ProcessConfiguration {
     public ProcessFinderService processFinderService(MultyStepProcess testMultyStepProcess,
             MultyStepProcess addMultyStepProcess,
             MultyStepProcess allMultyStepProcess) {
+
         Set<Process> processSet = Set.of(testMultyStepProcess,
                 addMultyStepProcess,
                 allMultyStepProcess);
         return message -> processSet.stream()
                 .filter(p -> p.canStartProcess(message))
+                .peek(p -> log.debug("find process: {}", p.getAction()))
                 .findFirst();
     }
 }
