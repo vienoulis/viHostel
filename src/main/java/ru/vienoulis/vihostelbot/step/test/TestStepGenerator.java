@@ -14,10 +14,8 @@ public class TestStepGenerator implements StepGenerator {
     private final Queue<Step> steps;
 
     @Autowired
-    public TestStepGenerator(StartStep startStep, MiddleStep middleStep, TestFinalStep testFinalStep) {
+    public TestStepGenerator(TestFinalStep testFinalStep) {
         steps = new LinkedList<>();
-        steps.add(startStep);
-        steps.add(middleStep);
         steps.add(testFinalStep);
     }
 
