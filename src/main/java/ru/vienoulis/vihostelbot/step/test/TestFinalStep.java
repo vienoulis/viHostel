@@ -17,9 +17,11 @@ public class TestFinalStep extends AbstractFinishStep {
 
     private static final String PAY_DAY_NOW = "Оплата сегодня:";
     private static final String PAY_DAY_EARLIE = "Просрочка 1 день и больше:";
-    private static final String DELIMITER = ",\n";
-    private static final StringJoiner PAY_DAY_NOW_SJ = new StringJoiner(DELIMITER);
-    private static final StringJoiner PAY_DAY_EARLIE_SJ = new StringJoiner(DELIMITER);
+    private static final String DELIMITER = ",\n * ";
+    private static final String PREFIX = " * ";
+    private static final String SUFFIX = "";
+    private static final StringJoiner PAY_DAY_NOW_SJ = new StringJoiner(DELIMITER, PREFIX, SUFFIX);
+    private static final StringJoiner PAY_DAY_EARLIE_SJ = new StringJoiner(DELIMITER, PREFIX, SUFFIX);
     private final Repository<SheetsVisitor> sheetsVisitorRepository;
 
     @Override
