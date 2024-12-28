@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum Action {
     ADD,
     ALL,
+    PAYDAY,
     TEST,
     CANCEL
 }

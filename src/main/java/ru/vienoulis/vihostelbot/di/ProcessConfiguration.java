@@ -10,6 +10,7 @@ import ru.vienoulis.vihostelbot.service.ProcessFinderService;
 import ru.vienoulis.vihostelbot.state.StateService;
 import ru.vienoulis.vihostelbot.step.add.AddStepGenerator;
 import ru.vienoulis.vihostelbot.step.list.AllStepGenerator;
+import ru.vienoulis.vihostelbot.step.payday.PaydayStepGenerator;
 import ru.vienoulis.vihostelbot.step.test.TestStepGenerator;
 
 @Slf4j
@@ -35,13 +36,22 @@ public class ProcessConfiguration {
     }
 
     @Bean
-    public ProcessFinderService processFinderService(MultyStepProcess testMultyStepProcess,
-            MultyStepProcess addMultyStepProcess,
-            MultyStepProcess allMultyStepProcess) {
+    public MultyStepProcess payDayStepProcess(StateService stateService, PaydayStepGenerator payDayStepGenerator) {
+        return new MultyStepProcess(stateService, payDayStepGenerator);
+    }
 
-        Set<Process> processSet = Set.of(testMultyStepProcess,
+    @Bean
+    public ProcessFinderService processFinderService(
+            MultyStepProcess testMultyStepProcess,
+            MultyStepProcess addMultyStepProcess,
+            MultyStepProcess allMultyStepProcess,
+            MultyStepProcess payDayStepProcess) {
+
+        Set<Process> processSet = Set.of(
+                testMultyStepProcess,
                 addMultyStepProcess,
-                allMultyStepProcess);
+                allMultyStepProcess,
+                payDayStepProcess);
         return message -> processSet.stream()
                 .filter(p -> p.canStartProcess(message))
                 .peek(p -> log.debug("find process: {}", p.getAction()))
