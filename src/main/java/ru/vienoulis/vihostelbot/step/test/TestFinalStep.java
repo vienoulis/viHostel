@@ -15,16 +15,35 @@ import ru.vienoulis.vihostelbot.step.AbstractFinishStep;
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class TestFinalStep extends AbstractFinishStep {
 
+    private static final String PAY_DAY_NOW = "Оплата сегодня:";
+    private static final String PAY_DAY_EARLIE = "Просрочка 1 день и больше:";
+    private static final String DELIMITER = ",\n";
+    private static final StringJoiner PAY_DAY_NOW_SJ = new StringJoiner(DELIMITER);
+    private static final StringJoiner PAY_DAY_EARLIE_SJ = new StringJoiner(DELIMITER);
     private final Repository<SheetsVisitor> sheetsVisitorRepository;
 
     @Override
     public String getMessage() {
         log.info("getMessage;");
         var now = LocalDate.now();
+        var oweVisitors = sheetsVisitorRepository.getEntrysBy(this::needRepay);
+        oweVisitors.stream()
+                .filter(sv -> sv.getEndDate().isEqual(now))
+                .map(SheetsVisitor::toString)
+                .forEach(PAY_DAY_NOW_SJ::add);
+        oweVisitors.stream()
+                .filter(sv -> sv.getEndDate().isBefore(now))
+                .map(SheetsVisitor::toString)
+                .forEach(PAY_DAY_EARLIE_SJ::add);
 
-        StringJoiner joiner = new StringJoiner(", \n");
-        sheetsVisitorRepository.getEntrysBy(sv -> true)
-                .forEach(sv -> joiner.add(sv.toString()));
-        return joiner.toString();
+        return "%s\n %s\n\n\n %s\n %s".formatted(PAY_DAY_NOW, PAY_DAY_NOW_SJ.toString(),
+                PAY_DAY_EARLIE, PAY_DAY_EARLIE_SJ.toString());
     }
+
+    private boolean needRepay(SheetsVisitor sheetsVisitor) {
+        var now = LocalDate.now();
+        var endDate = sheetsVisitor.getEndDate();
+        return endDate.isEqual(now) || endDate.isBefore(now);
+    }
+
 }
