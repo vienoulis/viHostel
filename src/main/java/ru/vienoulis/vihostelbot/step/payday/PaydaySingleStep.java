@@ -1,6 +1,7 @@
 package ru.vienoulis.vihostelbot.step.payday;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.StringJoiner;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,14 +28,14 @@ public class PaydaySingleStep extends AbstractFinishStep {
     @Override
     public String getMessage() {
         log.info("getMessage;");
-        var now = LocalDate.now();
+        var payday = LocalDate.now().minusDays(1);
         var oweVisitors = sheetsVisitorRepository.getEntrysBy(this::needRepay);
         oweVisitors.stream()
-                .filter(sv -> sv.getEndDate().isEqual(now))
+                .filter(sv -> sv.getEndDate().isEqual(payday))
                 .map(SheetsVisitor::toString)
                 .forEach(PAY_DAY_NOW_SJ::add);
         oweVisitors.stream()
-                .filter(sv -> sv.getEndDate().isBefore(now))
+                .filter(sv -> sv.getEndDate().isBefore(payday))
                 .map(SheetsVisitor::toString)
                 .forEach(PAY_DAY_EARLIE_SJ::add);
 
