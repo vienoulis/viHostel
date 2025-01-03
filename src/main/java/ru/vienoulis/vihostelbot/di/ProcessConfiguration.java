@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.vienoulis.vihostelbot.process.MultyStepProcess;
 import ru.vienoulis.vihostelbot.process.Process;
+import ru.vienoulis.vihostelbot.service.ConfigProvider;
 import ru.vienoulis.vihostelbot.service.ProcessFinderService;
 import ru.vienoulis.vihostelbot.state.StateService;
 import ru.vienoulis.vihostelbot.step.add.AddStepGenerator;
@@ -19,25 +20,26 @@ public class ProcessConfiguration {
 
     @Bean
     public MultyStepProcess testMultyStepProcess(StateService stateService,
-            TestStepGenerator testStepGenerator) {
-        return new MultyStepProcess(stateService, testStepGenerator);
+            TestStepGenerator testStepGenerator, ConfigProvider configProvider) {
+        return new MultyStepProcess(stateService, testStepGenerator, configProvider);
     }
 
     @Bean
     public MultyStepProcess allMultyStepProcess(StateService stateService,
-            AllStepGenerator allStepGenerator) {
-        return new MultyStepProcess(stateService, allStepGenerator);
+            AllStepGenerator allStepGenerator, ConfigProvider configProvider) {
+        return new MultyStepProcess(stateService, allStepGenerator, configProvider);
     }
 
     @Bean
     public MultyStepProcess addMultyStepProcess(StateService stateService,
-            AddStepGenerator testStepGenerator) {
-        return new MultyStepProcess(stateService, testStepGenerator);
+            AddStepGenerator testStepGenerator, ConfigProvider configProvider) {
+        return new MultyStepProcess(stateService, testStepGenerator, configProvider);
     }
 
     @Bean
-    public MultyStepProcess payDayStepProcess(StateService stateService, PaydayStepGenerator payDayStepGenerator) {
-        return new MultyStepProcess(stateService, payDayStepGenerator);
+    public MultyStepProcess payDayStepProcess(StateService stateService, PaydayStepGenerator payDayStepGenerator,
+            ConfigProvider configProvider) {
+        return new MultyStepProcess(stateService, payDayStepGenerator, configProvider);
     }
 
     @Bean

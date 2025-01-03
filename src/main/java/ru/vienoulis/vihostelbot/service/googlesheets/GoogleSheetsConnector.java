@@ -18,22 +18,15 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import ru.vienoulis.vihostelbot.service.ConfigProvider;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class GoogleSheetsConnector {
 
-
-    @Value("${spring.application.name}")
-    private String applicationName;
-    @Value("${vienoulis.google.sheets.credentials.path}")
-    private String credentialsFilePath;
-    @Value("${vienoulis.google.sheets.tokens.path}")
-    private String tokensPath;
-
+    private final ConfigProvider configProvider;
     private final NetHttpTransport netHttpTransport;
     private final JsonFactory jsonFactory;
     private final List<String> googleDataSheetScopes;
@@ -52,7 +45,7 @@ public class GoogleSheetsConnector {
         log.info("connect.enter;");
         try {
             service = new Sheets.Builder(netHttpTransport, jsonFactory, createCredential())
-                    .setApplicationName(applicationName)
+                    .setApplicationName(configProvider.getAppName())
                     .build();
             log.info("connect.exit; connected;");
             return true;
@@ -63,12 +56,12 @@ public class GoogleSheetsConnector {
     }
 
     private Credential createCredential() throws IOException {
-        InputStream in = new FileInputStream(credentialsFilePath);
+        InputStream in = new FileInputStream(configProvider.getCredentialPath());
         GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(jsonFactory, new InputStreamReader(in));
 
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 netHttpTransport, jsonFactory, clientSecrets, googleDataSheetScopes)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(tokensPath)))
+                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(configProvider.getSheetsTokensPath())))
                 .setAccessType("offline")
                 .build();
         return new AuthorizationCodeInstalledApp(flow, new LocalServerReceiver()).authorize("user");

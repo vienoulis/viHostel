@@ -5,7 +5,6 @@ import java.util.Optional;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -16,6 +15,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import ru.vienoulis.vihostelbot.process.CancelProcess;
 import ru.vienoulis.vihostelbot.process.Process;
+import ru.vienoulis.vihostelbot.service.ConfigProvider;
 import ru.vienoulis.vihostelbot.service.ProcessFinderService;
 import ru.vienoulis.vihostelbot.state.StateService;
 
@@ -24,20 +24,17 @@ import ru.vienoulis.vihostelbot.state.StateService;
 @Component
 public class Bot extends TelegramLongPollingBot {
 
-    @Value("${vienoulis.telegramm.token}")
-    private String botToken;
-    @Getter
-    @Value("${vienoulis.telegramm.botUsername}")
-    private String botUsername;
+    private final ConfigProvider configProvider;
     private final TelegramBotsApi telegramBotsApi;
     private final StateService stateService;
     private final ProcessFinderService processFinderService;
     private final CancelProcess cancelProcess;
 
     @Autowired
-    public Bot(StateService stateService,
+    public Bot(ConfigProvider configProvider, StateService stateService,
             ProcessFinderService processFinderService,
             CancelProcess cancelProcess) {
+        this.configProvider = configProvider;
         this.stateService = stateService;
         this.processFinderService = processFinderService;
         this.cancelProcess = cancelProcess;
@@ -65,6 +62,16 @@ public class Bot extends TelegramLongPollingBot {
                 .flatMap(p -> p.processAndGetMessage(msg))
                 .ifPresent(this::sendMessage);
         log.info("onUpdateReceived.exit; id: {}", update.getUpdateId());
+    }
+
+    @Override
+    public String getBotUsername() {
+        return configProvider.getBotUsername();
+    }
+
+    @Override
+    public String getBotToken() {
+        return configProvider.getToken();
     }
 
     private Optional<Process> getCancelProcessIfExist(Message msg) {

@@ -1,0 +1,14 @@
+[Unit]
+Description=kuzmich
+After=network.target
+
+[Service]
+ExecStart=start.sh
+WorkingDirectory=/opt/vienoulis/kuzmich/
+User=vibot
+Group=vibot
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

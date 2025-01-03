@@ -6,17 +6,15 @@ import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.atomic.AtomicReference;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage.SendMessageBuilder;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.vienoulis.vihostelbot.dto.Action;
+import ru.vienoulis.vihostelbot.service.ConfigProvider;
 import ru.vienoulis.vihostelbot.state.StateService;
 import ru.vienoulis.vihostelbot.step.Step;
 import ru.vienoulis.vihostelbot.step.StepGenerator;
 
-@Component
 @Slf4j
 public class MultyStepProcess extends AbstractProcess {
 
@@ -24,9 +22,8 @@ public class MultyStepProcess extends AbstractProcess {
     private final StepGenerator stepGenerator;
     private final AtomicReference<Step> awaitResponseStep = new AtomicReference<>();
 
-    @Autowired
-    public MultyStepProcess(StateService stateService, StepGenerator stepGenerator) {
-        super(stateService);
+    public MultyStepProcess(StateService stateService, StepGenerator stepGenerator, ConfigProvider configProvider) {
+        super(configProvider, stateService);
         this.stepGenerator = stepGenerator;
     }
 

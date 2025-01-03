@@ -11,6 +11,19 @@ java {
     sourceCompatibility = '21'
 }
 
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'ru.vienoulis.vihostelbot.ViHostelBotApplication'
+        )
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    archiveFileName = "${project.name}.jar"
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 repositories {
     mavenCentral()
 }

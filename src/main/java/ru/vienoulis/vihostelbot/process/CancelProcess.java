@@ -7,6 +7,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage.SendMessageBuilder;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import ru.vienoulis.vihostelbot.dto.Action;
+import ru.vienoulis.vihostelbot.service.ConfigProvider;
 import ru.vienoulis.vihostelbot.state.StateService;
 
 import static ru.vienoulis.vihostelbot.dto.Action.CANCEL;
@@ -15,8 +16,8 @@ import static ru.vienoulis.vihostelbot.dto.Action.CANCEL;
 @Component
 public class CancelProcess extends AbstractProcess {
 
-    public CancelProcess(StateService stateService) {
-        super(stateService);
+    public CancelProcess(StateService stateService, ConfigProvider configProvider) {
+        super(configProvider, stateService);
     }
 
     @Override
@@ -37,7 +38,7 @@ public class CancelProcess extends AbstractProcess {
 
     @Override
     protected void onProcessStart() {
-       log.info("onProcessStart; no-op");
+        log.info("onProcessStart; no-op");
     }
 
     @Override
@@ -47,7 +48,7 @@ public class CancelProcess extends AbstractProcess {
 
     @Override
     protected void onProcessFinish() {
-       log.info("onProcessFinish; no-op");
+        log.info("onProcessFinish; no-op");
     }
 
     @Override

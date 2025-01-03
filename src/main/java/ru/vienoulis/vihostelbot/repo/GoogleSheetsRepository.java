@@ -10,22 +10,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import ru.vienoulis.vihostelbot.dto.SheetsVisitor;
+import ru.vienoulis.vihostelbot.service.ConfigProvider;
 import ru.vienoulis.vihostelbot.service.googlesheets.GoogleSheetsConnector;
 
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class GoogleSheetsRepository implements Repository<SheetsVisitor> {
 
+    private final ConfigProvider configProvider;
     private final GoogleSheetsConnector sheetsConnector;
-    @Value("${vienoulis.google.sheets.spreadsheetId}")
-    private String spreadsheetId;
-    @Value("${vienoulis.google.sheets.range}")
-    private String range;
     private final DateTimeFormatter googleSheetsFormatter;
-
     private SheetsVisitor transitionalEntry = SheetsVisitor.builder().build();
 
     @Override
@@ -52,7 +48,7 @@ public class GoogleSheetsRepository implements Repository<SheetsVisitor> {
     @SneakyThrows
     public Set<SheetsVisitor> getEntrysBy(Predicate<SheetsVisitor> predicate) {
         return sheetsConnector.getService().spreadsheets().values()
-                .get(spreadsheetId, range)
+                .get(configProvider.getSpreadsheetId(), configProvider.getSheetsRange())
                 .execute().getValues().stream()
                 .filter(l -> l.size() >= 3)
                 .filter(l -> StringUtils.isNotBlank((CharSequence) l.getFirst()))
