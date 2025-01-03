@@ -20,9 +20,13 @@ public abstract class AbstractProcess implements Process {
 
     @Override
     public boolean canStartProcess(Message message) {
-        var text = message.getText();
-        var expected = "/%s%s".formatted(getAction().name().toLowerCase(), configProvider.getBotUsername());
-        return StringUtils.equals(expected, text);
+        if (StringUtils.isBlank(message.getText())) {
+            return false;
+        }
+        var text = message.getText()
+                .replace(configProvider.getBotUsername(), "")
+                .toLowerCase();
+        return StringUtils.equals(getAction().name().toLowerCase(), text);
     }
 
     @Override
