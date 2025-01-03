@@ -46,7 +46,6 @@ public class Bot extends TelegramLongPollingBot {
         }
     }
 
-    @PostConstruct
     public void postConstruct() throws TelegramApiException {
         telegramBotsApi.registerBot(this);
         stateService.ready();

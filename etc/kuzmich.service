@@ -3,7 +3,7 @@ Description=kuzmich
 After=network.target
 
 [Service]
-ExecStart=start.sh
+ExecStart=/bin/sh start.sh
 WorkingDirectory=/opt/vienoulis/kuzmich/
 User=vibot
 Group=vibot

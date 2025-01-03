@@ -12,9 +12,15 @@ import java.util.Collections;
 import java.util.List;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import ru.vienoulis.vihostelbot.Bot;
 import ru.vienoulis.vihostelbot.dto.Visitor;
+import ru.vienoulis.vihostelbot.process.CancelProcess;
 import ru.vienoulis.vihostelbot.repo.Repository;
 import ru.vienoulis.vihostelbot.repo.impl.InMemoryVisitorRepositoryImpl;
+import ru.vienoulis.vihostelbot.service.ConfigProvider;
+import ru.vienoulis.vihostelbot.service.ProcessFinderService;
+import ru.vienoulis.vihostelbot.state.StateService;
 
 @Configuration
 public class AppConfiguration {
@@ -42,5 +48,14 @@ public class AppConfiguration {
     @Bean
     public DateTimeFormatter googleSheetsFormatter() {
         return DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    }
+
+    @Bean
+    public Bot bot(ConfigProvider configProvider, StateService stateService,
+            ProcessFinderService processFinderService,
+            CancelProcess cancelProcess) throws TelegramApiException {
+        var bot =  new Bot(configProvider, stateService, processFinderService, cancelProcess);
+        bot.postConstruct();
+        return bot;
     }
 }
